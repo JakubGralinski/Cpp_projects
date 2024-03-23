@@ -1,68 +1,92 @@
-auto main() -> int{
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <ranges>
+#include <string>
+#include <fmt/core.h> // Including fmt library for printing
 
-auto sort = [] (
-             std::vector<std::string> left, std::vector<std::string> right
-     ) -> void {
-         std::ranges::sort(left);
-         auto duplicates = std::ranges::unique(left);
-         left.erase(duplicates.begin(), duplicates.end());
+auto main() -> int {
+    // Define a lambda function for custom sorting
+    auto sort = [] (
+                 std::vector<std::string> left, std::vector<std::string> right
+             ) -> void {
+                 // Sort and remove duplicates from the 'left' vector
+                 std::ranges::sort(left);
+                 auto duplicates = std::ranges::unique(left);
+                 left.erase(duplicates.begin(), duplicates.end());
 
-         std::ranges::sort(right);
-         duplicates = std::ranges::unique(right);
-         right.erase(duplicates.begin(), duplicates.end());
+                 // Sort and remove duplicates from the 'right' vector
+                 std::ranges::sort(right);
+                 duplicates = std::ranges::unique(right);
+                 right.erase(duplicates.begin(), duplicates.end());
 
-         auto check_one = [] (std::vector<std::string> left, std::vector<std::string> right, int i, int j){
-             return (right[j].front() >= '0' and
-                     right[j].front() <= '9' and
-                     right[j + 1].front() >= '0' and
-                     right[j + 1].front() <= '9');
-         };
-         auto check_two= [] (std::vector<std::string> left, std::vector<std::string> right, int i, int j){
-             return (right[j].front() < '0' or
-                     right[j].front() > '9') and
-                    (right[j + 1].front() < '0' or
-                     right[j + 1].front() > '9');
-         };
+                 // Helper lambda functions to check sorting criteria
+                 auto check_one = [] (std::vector<std::string> left, std::vector<std::string> right, int i, int j){
+                     return (right[j].front() >= '0' and
+                             right[j].front() <= '9' and
+                             right[j + 1].front() >= '0' and
+                             right[j + 1].front() <= '9');
+                 };
+                 auto check_two= [] (std::vector<std::string> left, std::vector<std::string> right, int i, int j){
+                     return (right[j].front() < '0' or
+                             right[j].front() > '9') and
+                            (right[j + 1].front() < '0' or
+                             right[j + 1].front() > '9');
+                 };
 
-         if (left.size() < right.size()) {
-             for (auto i = 0; i < right.size(); i++) {
-                 for (auto j = 0; j < right.size() - 1 - i; j++) {
-                     // both start with a digit or both start with a letter
-                     if ((check_one(left, right, i, j)) || (check_two(left, right, i, j))){
-                         if (right[j] > right[j + 1]) {
-                             std::ranges::swap(right[j], right[j + 1]);
+                 // Sorting logic based on vector sizes
+                 if (left.size() < right.size()) {
+                     for (auto i = 0; i < right.size(); i++) {
+                         for (auto j = 0; j < right.size() - 1 - i; j++) {
+                             // Both start with a digit or both start with a letter
+                             if ((check_one(left, right, i, j)) || (check_two(left, right, i, j))){
+                                 if (right[j] > right[j + 1]) {
+                                     std::ranges::swap(right[j], right[j + 1]);
+                                 }
+                             } else { // Leading digits last
+                                 if (right[j].front() >= '0' and right[j].front() <= '9') {
+                                     std::ranges::swap(right[j], right[j + 1]);
+                                 }
+                             }
                          }
-                     } else { // leading digits last
-                         if (right[j].front() >= '0' and right[j].front() <= '9') {
-                             std::ranges::swap(right[j], right[j + 1]);
+                     }
+                 } else {
+                     for (auto i = 0; i < left.size(); i++) {
+                         for (auto j = 0; j < left.size() - 1 - i; j++) {
+                             // Both start with a digit or both start with a letter
+                             if ((check_one(left, right, i, j)) || (check_two(left, right, i, j))) {
+                                 if (left[j] > left[j + 1]) {
+                                     std::ranges::swap(left[j], left[j + 1]);
+                                 }
+                             } else { // Leading digits last
+                                 if (left[j].front() >= '0' and left[j].front() <= '9') {
+                                     std::ranges::swap(left[j], left[j + 1]);
+                                 }
+                             }
                          }
                      }
                  }
-             }
-         } else {
-             for (auto i = 0; i < left.size(); i++) {
-                 for (auto j = 0; j < left.size() - 1 - i; j++) {
-                     // both start with a digit or both start with a letter
-                     if ((check_one(left, right, i, j)) || (check_two(left, right, i, j))) {
-                         if (left[j] > left[j + 1]) {
-                             std::ranges::swap(left[j], left[j + 1]);
-                         }
-                     } else { // leading digits last
-                         if (left[j].front() >= '0' and left[j].front() <= '9') {
-                             std::ranges::swap(left[j], left[j + 1]);
-                         }
-                     }
-                 }
-             }
-         }
-     };
-// Sort two vectors of strings using the custom sorting lambda function
-std::vector<std::string> left = {"apple", "banana", "10oranges"};
-std::vector<std::string> right = {"zebra", "5lion", "tiger"};
+             };
 
-example(left, right);
+    // Initialize two vectors of strings
+    std::vector<std::string> left = {"apple", "banana", "10oranges"};
+    std::vector<std::string> right = {"zebra", "5lion", "tiger"};
 
-// Result:
-// left: {"10oranges", "apple", "banana"}
-// right: {"5lion", "tiger", "zebra"}
+    // Call the custom sorting function
+    sort(left, right);
+
+    // Output the sorted vectors using fmt library
+    fmt::print("Left vector after sorting: ");
+    for (const auto& item : left) {
+        fmt::print("{} ", item);
+    }
+    fmt::print("\n");
+
+    fmt::print("Right vector after sorting: ");
+    for (const auto& item : right) {
+        fmt::print("{} ", item);
+    }
+    fmt::print("\n");
+
+    return 0; // Return 0 to indicate successful execution
 }
