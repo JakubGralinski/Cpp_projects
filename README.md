@@ -18,9 +18,9 @@ This repository serves as a showcase of projects developed while learning C++. W
 
 Here's a list of projects included in this repository:
 
-1. **[Project Name 1](project_folder_1/)** - Brief description of the project.
-2. **[Project Name 2](project_folder_2/)** - Brief description of the project.
-3. ...
+1. **[NaturalSorting](NaturalSorting/)** - The Natural Sorting function provided here is a versatile utility for sorting strings in                                             C++ based on natural ordering, particularly useful when dealing with filenames, version                                              numbers, or any alphanumeric strings containing numeric parts.
+
+
 
 Feel free to explore each project folder for more details on individual projects.
 
