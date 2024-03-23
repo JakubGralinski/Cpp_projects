@@ -1,0 +1,68 @@
+auto main() -> int{
+
+auto sort = [] (
+             std::vector<std::string> left, std::vector<std::string> right
+     ) -> void {
+         std::ranges::sort(left);
+         auto duplicates = std::ranges::unique(left);
+         left.erase(duplicates.begin(), duplicates.end());
+
+         std::ranges::sort(right);
+         duplicates = std::ranges::unique(right);
+         right.erase(duplicates.begin(), duplicates.end());
+
+         auto check_one = [] (std::vector<std::string> left, std::vector<std::string> right, int i, int j){
+             return (right[j].front() >= '0' and
+                     right[j].front() <= '9' and
+                     right[j + 1].front() >= '0' and
+                     right[j + 1].front() <= '9');
+         };
+         auto check_two= [] (std::vector<std::string> left, std::vector<std::string> right, int i, int j){
+             return (right[j].front() < '0' or
+                     right[j].front() > '9') and
+                    (right[j + 1].front() < '0' or
+                     right[j + 1].front() > '9');
+         };
+
+         if (left.size() < right.size()) {
+             for (auto i = 0; i < right.size(); i++) {
+                 for (auto j = 0; j < right.size() - 1 - i; j++) {
+                     // both start with a digit or both start with a letter
+                     if ((check_one(left, right, i, j)) || (check_two(left, right, i, j))){
+                         if (right[j] > right[j + 1]) {
+                             std::ranges::swap(right[j], right[j + 1]);
+                         }
+                     } else { // leading digits last
+                         if (right[j].front() >= '0' and right[j].front() <= '9') {
+                             std::ranges::swap(right[j], right[j + 1]);
+                         }
+                     }
+                 }
+             }
+         } else {
+             for (auto i = 0; i < left.size(); i++) {
+                 for (auto j = 0; j < left.size() - 1 - i; j++) {
+                     // both start with a digit or both start with a letter
+                     if ((check_one(left, right, i, j)) || (check_two(left, right, i, j))) {
+                         if (left[j] > left[j + 1]) {
+                             std::ranges::swap(left[j], left[j + 1]);
+                         }
+                     } else { // leading digits last
+                         if (left[j].front() >= '0' and left[j].front() <= '9') {
+                             std::ranges::swap(left[j], left[j + 1]);
+                         }
+                     }
+                 }
+             }
+         }
+     };
+// Sort two vectors of strings using the custom sorting lambda function
+std::vector<std::string> left = {"apple", "banana", "10oranges"};
+std::vector<std::string> right = {"zebra", "5lion", "tiger"};
+
+example(left, right);
+
+// Result:
+// left: {"10oranges", "apple", "banana"}
+// right: {"5lion", "tiger", "zebra"}
+}
