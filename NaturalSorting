@@ -1,0 +1,90 @@
+#include <fmt/core.h>
+#include <vector>
+
+// This function defines a comparator that sorts strings in a natural order,
+// taking into account numeric parts within the strings.
+auto naturalOrder() {
+    // Lambda function to check if a character is a digit.
+    auto is_digit = [](char c) {
+        return std::isdigit(static_cast<unsigned char>(c));
+    };
+
+    // Lambda function defining the natural order comparator.
+    return [&is_digit](std::string &a, std::string &b) {
+        auto a_begin = a.begin(), b_begin = b.begin();
+        auto a_end = a.end(), b_end = b.end();
+
+        // Loop through both strings simultaneously.
+        while (a_begin != a_end && b_begin != b_end) {
+            // If both characters are digits, compare the numeric parts.
+            if (is_digit(*a_begin) && is_digit(*b_begin)) {
+                int num_a = 0, num_b = 0;
+                // Extract numeric part from string a.
+                while (a_begin != a_end && is_digit(*a_begin)) {
+                    num_a = num_a * 10 + (*a_begin++ - '0');
+                }
+                // Extract numeric part from string b.
+                while (b_begin != b_end && is_digit(*b_begin)) {
+                    num_b = num_b * 10 + (*b_begin++ - '0');
+                }
+                // If numeric parts are different, return comparison result.
+                if (num_a != num_b) {
+                    return num_a < num_b;
+                }
+            } else {
+                // If characters are not digits, compare them directly.
+                if (*a_begin != *b_begin) {
+                    return *a_begin < *b_begin;
+                }
+                ++a_begin;
+                ++b_begin;
+            }
+        }
+
+        // If one string ends earlier, it comes first.
+        return b_begin != b_end;
+    };
+}
+
+
+auto main() -> int{
+ std::vector<std::string> test_data = {
+            "lecture 1", "lecture 2", "lecture 3",
+            "lecture 10", "lecture 11", "lecture 12",
+            "lecture 35", "lecture 39", "lecture 92",
+            "lecture 101", "lecture 111", "lecture 133",
+            "lecture 159", "lecture 212", "lecture 221"
+    };
+
+    std::vector<std::string> initialFileNames = {
+            "file1.txt",
+            "file10.txt",
+            "file11.txt",
+            "file2.txt",
+            "file20.txt",
+            "file3.txt"
+    };
+
+    std::vector<std::string> filenamesWithParts = {
+            "file1_part30.txt",
+            "file10_part10.txt",
+            "file10_part2.txt",
+            "file2_part1.txt",
+            "file20_part21.txt",
+            "file3_part1.txt"
+    };
+
+    std::ranges::sort(test_data, pjc::naturalOrder());
+    std::ranges::sort(initialFileNames, pjc::naturalOrder());
+    std::ranges::sort(filenamesWithParts, pjc::naturalOrder());
+
+    auto printVec = [] (std::vector<std::string>& vec){
+        for (auto& item : vec) {
+            fmt::println("{}", item);
+        }
+    };
+
+    printVec(test_data);
+    printVec(initialFileNames);
+    printVec(filenamesWithParts);
+}
