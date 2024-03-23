@@ -28,4 +28,25 @@ Feel free to explore each project folder for more details on individual projects
 
 To use any of the projects in this repository, follow these steps:
 
-1. Clone the repository to your local machine using:
+1. Clone the repository to your local machine using: git clone https://github.com/your-username/Cpp_Projects.git
+
+2. Navigate to the desired project folder.
+   
+3. Follow the instructions provided in the project's README or source files for building, running, and testing the project.
+
+## Contributing
+
+If you'd like to contribute to this repository, you can:
+
+- Fork the repository.
+- Create a new branch (`git checkout -b feature/your-feature`).
+- Make your changes and commit them (`git commit -am 'Add new feature'`).
+- Push to the branch (`git push origin feature/your-feature`).
+- Create a new Pull Request.
+
+Please ensure that your contributions adhere to the repository's standards and include appropriate documentation where necessary.
+
+## License
+
+This repository is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute the code as you see fit. See the [LICENSE](LICENSE) file for more details.
+
