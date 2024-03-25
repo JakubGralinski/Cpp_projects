@@ -18,11 +18,12 @@ This repository serves as a showcase of projects developed while learning C++. W
 
 Here's a list of projects included in this repository:
 
-1. **[NaturalSorting](NaturalSorting/)** - The Natural Sorting function provided here is a versatile utility for sorting strings in                                             C++ based on natural ordering, particularly useful when dealing with filenames, version                                              numbers, or any alphanumeric strings containing numeric parts.
+1. **[NaturalSorting](NaturalSorting/)** - The Natural Sorting function provided here is a versatile utility for sorting strings in                                                                                        C++ based on natural ordering, particularly useful when dealing with filenames, version                                                                                         numbers, or any alphanumeric strings containing numeric parts.
 
-2. **[CustomSort](CustomSort/)** - The sort lambda function provided here offers a custom sorting mechanism for two vectors of                                          strings in C++. This function is designed to sort strings in a specific order based on certain                                       criteria, offering flexibility and customization beyond standard sorting algorithms.
+2. **[CustomSort](CustomSort/)** - The sort lambda function provided here offers a custom sorting mechanism for two vectors of
+                                    strings in C++. This function is designed to sort strings in a specific order based on certain                                                                                 criteria, offering flexibility and customization beyond standard sorting algorithms.
 
-Feel free to explore each project folder for more details on individual projects.
+4. **[ReducingAdjacentWhitespaces](ReducingAdjacentWhitespaces/)** - This repository contains a simple C++ function named reduceAdjacentWhitespaces designed to remove adjacent                                                                      whitespace characters from a given string, reducing them to a single whitespace character. The function,                                                                        defined in main.cpp, takes a string as input and iterates through it character by character, identifying                                                                        consecutive whitespace characters and replacing them with a single whitespace. This ensures that the                                                                             output string remains well-formatted and readable, eliminating unnecessary whitespace.
 
 ## Usage
 
