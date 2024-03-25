@@ -1,0 +1,28 @@
+auto reduceAdjacentWhitespaces(std::string str){
+    auto spaceCount = 0;
+    auto it = str.begin();
+
+    while(it != str.end()){
+        if(std::isspace(*it)){
+            spaceCount++;
+            if(spaceCount > 1){
+                it = str.erase(it);
+                continue;
+            }
+        } else{
+            spaceCount = 0;
+        }
+        ++it;
+    }
+    return str;
+}
+
+auto main() -> int{
+      fmt::println(
+            "[{}]\n[{}]\n[{}]\n[{}]",
+            reduceAdjacentWhitespaces("Abc"),
+            reduceAdjacentWhitespaces("A b c"),
+            reduceAdjacentWhitespaces("   A\tb c      "),
+            reduceAdjacentWhitespaces("A\t\tb\n \n  \t c")
+    );
+  }
