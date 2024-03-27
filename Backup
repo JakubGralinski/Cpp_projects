@@ -1,0 +1,26 @@
+namespace  fs = std::filesystem;
+auto backup(){
+    fmt::println("Enter a path to source folder: ");
+    fs::path src_path;
+    std::cin >> src_path;
+
+    fmt::println("Enter a path to save folder: ");
+    fs::path save_path;
+    std::cin >> save_path;
+
+    try{
+        if(!fs::exists(save_path)) fs::create_directories(save_path);
+
+        for(auto& entry : fs::directory_iterator(src_path)){
+            fs::path current_path = entry.path();
+            fs::path final_path = save_path / (current_path.filename().string() + "-backup");
+
+            if(fs::is_regular_file(current_path)){
+                fs::copy_file(current_path, final_path, fs::copy_options::update_existing);
+            }
+        }
+        fmt::print("Backup completed successfully.\n");
+    } catch(std::exception& e){
+        fmt::print(stderr, "Error: {}\n", e.what());
+    }
+}
