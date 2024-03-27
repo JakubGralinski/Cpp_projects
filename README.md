@@ -29,7 +29,7 @@ Here's a list of projects included in this repository:
                                             Partitioning: Partition a range into two sub-ranges based on a given predicate.
                                             Dropping Elements: Remove a specified number of elements from the beginning or end of a range.
                                             Flattening: Flatten a nested range into a single vector.
-
+5. **[RangeChunker](RangeChunker/)** - RangeChunker is a C++ library that provides a convenient template function for chunking ranges into smaller                                                segments. With RangeChunker, you can easily split any range, whether it's a std::vector, std::set, or any other                                             range-compatible container, into subranges of a specified size.
 
 ## Usage
 
