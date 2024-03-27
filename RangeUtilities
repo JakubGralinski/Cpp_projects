@@ -1,0 +1,95 @@
+#include <vector>
+#include <ranges>
+#include <algorithm>
+#include <iterator>
+#include <utility>
+#include <fmt/core.h>
+
+namespace ranges {
+    // Function to partition a vector into two vectors based on a predicate
+    template <typename T, typename Predicate>
+    auto partition(std::vector<T>& vec, Predicate predicate){
+        std::vector<T> true_elems, false_elems;
+
+        // Splitting into two vectors based on the predicate
+        for(auto& elem : vec){
+            if(predicate(elem)){
+                true_elems.push_back(elem);
+            } else{
+                false_elems.push_back(elem);
+            }
+        }
+        return std::make_pair(true_elems, false_elems);
+    }
+
+    // Function to drop the first n elements from a range
+    template <typename Range>
+    auto drop(Range& range, int n){
+        auto it = std::ranges::begin(range);
+        // Move the iterator forward by the minimum of n and the size of the range
+        std::advance(it, std::min(static_cast<size_t>(n), std::ranges::size(range)));
+
+        // Return a vector containing elements after dropping the first n elements
+        return std::vector(it, std::ranges::end(range));
+    }
+
+    // Function to drop the last n elements from a range
+    template <typename Range>
+    auto dropLast(Range& range, int n) {
+        using value_type = typename std::ranges::range_value_t<Range>;
+        std::vector<value_type> result;
+
+        auto it = std::ranges::begin(range);
+        auto endIt = std::ranges::end(range);
+
+        // Move the iterator forward by the maximum of (size - n) and 0
+        std::advance(it, std::max(static_cast<int>(std::ranges::size(range)) - n, 0));
+        // Reserve memory for the result vector
+        result.reserve(std::max(static_cast<int>(std::ranges::size(range)) - n, 0));
+
+        // Copy elements from current position to the end of the range
+        while (it != endIt) {
+            result.push_back(std::move(*it));
+            ++it;
+        }
+        return result;
+    }
+
+    // Function to flatten a nested range into a single vector
+    template <typename Range>
+    auto flatten(Range& range){
+        using value_type = typename std::ranges::range_value_t<Range>::value_type;
+        std::vector<value_type> flattened;
+
+        // Iterate through each inner range and append its elements to the flattened vector
+        for(auto& inner_range : range){
+            flattened.insert(flattened.end(), std::ranges::begin(inner_range), std::ranges::end(inner_range));
+        }
+        return flattened;
+    }
+} // namespace ranges
+
+auto main() -> int {
+    std::vector<int> vec = {1,2,3,4,5};
+    
+    // Partition vec into true_elems (even) and false_elems (odd)
+    auto[true_elems, false_elems] = ranges::partition(vec,[](int i) {return  i%2 == 0;});
+    fmt::print("{}\n", true_elems); // Print true_elems
+    fmt::print("{}\n", false_elems); // Print false_elems
+
+    std::vector<int> vec2 = {1, 2, 3, 4, 5};
+    
+    // Drop first 2 elements from vec2
+    auto dropped = ranges::drop(vec2, 2);
+    fmt::print("{}\n", dropped); // Print dropped elements
+
+    // Drop last 2 elements from vec
+    auto drop_last = ranges::dropLast(vec, 2);
+    fmt::print("{}\n", drop_last); // Print dropped elements
+
+    std::vector<std::vector<int>> nested_vec = {{1,2}, {3,4}, {5,6}};
+    
+    // Flatten nested_vec into a single vector
+    auto flattened = ranges::flatten(nested_vec);
+    fmt::print("{}\n", flattened); // Print flattened 
+}
