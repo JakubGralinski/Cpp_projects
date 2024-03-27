@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <string>
+#include <ranges>
+#include <fmt/core.h> 
+
+template<typename Range>
+auto chunk(Range& range, int n){
+    using value_type = typename std::ranges::range_value_t<Range>; // Get the type of elements in the range
+    std::vector<std::vector<value_type>> chunks; // Vector to store chunks
+
+    auto it = std::ranges::begin(range); // Iterator to the beginning of the range
+    const auto endIt = std::ranges::end(range); // Iterator to the end of the range
+
+    while(it != endIt){
+        std::vector<value_type> chunk; // Create a new chunk
+        chunk.reserve(n); // Preallocate memory for the chunk
+
+        for(int i = 0; i < n && it != endIt; ++i, ++it){
+            chunk.push_back(*it); // Add elements to the chunk
+        }
+        chunks.push_back(std::move(chunk)); // Move the chunk into the vector of chunks
+    }
+
+    return chunks; // Return the vector of chunks
+}
+
+auto main() -> int{
+    auto v1 = std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    auto v2 = std::vector<std::string>{"a", "b", "c", "d", "e", "f"};
+    auto v3 = std::set<float>{1.41, 1.61, 1.73, 2.72, 3.14};
+
+    auto v1by3 = chunk(v1, 3);
+    auto v1by2 = chunk(v1, 2);
+
+    auto v2by5 = chunk(v2, 5);
+    auto v2by1 = chunk(v2, 1);
+
+    auto v3by2 = chunk(v3, 2);
+    auto v3by3 = chunk(v3, 3);
+
+    fmt::print("v1 by 3: {}\n", v1by3);
+    fmt::print("v1 by 2: {}\n", v1by2);
+    fmt::print("v2 by 5: {}\n", v2by5);
+    fmt::print("v2 by 1: {}\n", v2by1);
+    fmt::print("v3 by 2: {}\n", v3by2);
+    fmt::print("v3 by 3: {}\n", v3by3);
+}
