@@ -25,18 +25,11 @@ Here's a list of projects included in this repository:
 
 4. **[ReducingAdjacentWhitespaces](ReducingAdjacentWhitespaces/)** - This repository contains a simple C++ function named reduceAdjacentWhitespaces designed to remove adjacent                                                                      whitespace characters from a given string, reducing them to a single whitespace character. The function,                                                                        defined in main.cpp, takes a string as input and iterates through it character by character, identifying                                                                        consecutive whitespace characters and replacing them with a single whitespace. This ensures that the                                                                             output string remains well-formatted and readable, eliminating unnecessary whitespace.
 
-5.4. **[RangeUtilities](RangeUtilities/)** - Range Utilities is a C++ library providing a collection of utility functions and algorithms for working with ranges. 
-Partitioning: Partition a range into two sub-ranges based on a given predicate.
-Dropping Elements: Remove a specified number of elements from the beginning or end of a range.
-Flattening: Flatten a nested range into a single vector.
+5. **[RangeUtilities](RangeUtilities/)** - Range Utilities is a C++ library providing a collection of utility functions and algorithms for working with                                                ranges. 
+                                            Partitioning: Partition a range into two sub-ranges based on a given predicate.
+                                            Dropping Elements: Remove a specified number of elements from the beginning or end of a range.
+                                            Flattening: Flatten a nested range into a single vector.
 
-Features
-
-Partitioning: Partition a range into two sub-ranges based on a given predicate.
-
-Dropping Elements: Remove a specified number of elements from the beginning or end of a range.
-
-Flattening: Flatten a nested range into a single vector.
 
 ## Usage
 
