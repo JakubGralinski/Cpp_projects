@@ -1,0 +1,81 @@
+namespace  fs = std::filesystem;
+auto fileAnalysis() {
+    fmt::print("Enter the absolute path to the source folder: ");
+    fs::path src_path;
+    std::cin >> src_path;
+    int file_count = 0;
+
+    try {
+        double total_sum = 0.0;
+
+        for (const auto& entry : fs::directory_iterator(src_path)) {
+            if (entry.is_regular_file()) {
+                file_count++;
+
+                std::ifstream file(entry.path());
+                if (file) {
+                    std::string filename = entry.path().filename().string();
+                    double sum = 0.0;
+                    double num;
+                    std::string line;
+
+                    while (std::getline(file, line)) {
+                        std::istringstream iss(line);
+                        while (iss >> num) {
+                            sum += num;
+                        }
+                    }
+
+                    fmt::print("{}: {}\n", filename, sum);
+                    total_sum += sum;
+                } else {
+                    fmt::print(stderr, "Failed to open file {}\n", entry.path().string());
+                }
+            }
+        }
+
+        fmt::print("Total number of files: {}\n", file_count);
+        fmt::print("Total sum of all numbers: {}\n", total_sum);
+    } catch (const std::exception& e) {
+        fmt::print(stderr, "Error: {}\n", e.what());
+    }
+}
+
+bool isPalindrome(const std::string& word) {
+    std::string reversed_word = word;
+    std::reverse(reversed_word.begin(), reversed_word.end());
+    return word == reversed_word;
+}
+
+namespace  fs = std::filesystem;
+auto searchPalindromes(){
+    fmt::print("Enter the absolute path to the source folder: ");
+    fs::path src_path;
+    std::cin >> src_path;
+
+    try {
+        for (const auto& entry : fs::directory_iterator(src_path)) {
+            std::ifstream file(entry.path());
+            if (file) {
+                std::string filename = entry.path().filename().string();
+                std::vector<std::string> palindromes;
+
+                std::string word;
+                while(file >> word){
+                    if(isPalindrome(word)){
+                        palindromes.push_back(word);
+                    }
+                }
+                if (!palindromes.empty()) {
+                    fmt::print("{}:\n", filename);
+                    for (auto& palindrome : palindromes) {
+                        fmt::print("- {}\n", palindrome);
+                    }
+                }
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        fmt::print(stderr, "Error: {}\n", e.what());
+    }
+}
