@@ -1,0 +1,63 @@
+
+namespace fs = std::filesystem;
+
+bool isValidSudoku(std::vector<std::vector<int>>& grid){
+    //Rows & Cols check
+    for(int i = 0; i < 9; ++i){
+        std::vector<bool> row_check(9, false);
+        std::vector<bool> col_check(9, false);
+
+        for(int j = 0; j < 9; ++j){
+            if(grid[i][j] != 0 && row_check[grid[i][j] - 1]) return false;
+            row_check[grid[i][j] -1] = true;
+
+            if(grid[j][i] != 0 && col_check[grid[j][i] - 1]) return false;
+            col_check[grid[j][i] - 1] = true;
+        }
+    }
+
+    // 3x3 grid check
+    for(int i = 0; i < 9; i += 3){
+        for(int j = 0; j < 9; j += 3){
+
+            std::vector<bool> subgrid_check(9, false);
+
+            for(int k = i; k < i + 3; ++k){
+                for(int l = j; l < j + 3; ++l){
+
+                    if(grid[k][l] != 0 && subgrid_check[grid[k][l] - 1]) return false;
+                    subgrid_check[grid[k][l] - 1] = true;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+auto findValidSudokuSolutions(std::string& folder_path){
+    std::ofstream output_file(folder_path + "/solutions.txt");
+    if(!output_file.is_open()){
+        fmt::print(stderr, "Failed to create .txt file");
+        return;
+    }
+
+    for(auto& entry : fs::directory_iterator(folder_path)){
+        if(entry.is_regular_file()){
+            std::ifstream input_file(entry.path());
+            if(input_file.is_open()){
+                std::vector<std::vector<int>> grid(9,std::vector<int>(9));
+                for(int i = 0; i < 9; ++i){
+                    for(int j = 0; j < 9; ++j){
+                        input_file >> grid[i][j];
+                    }
+                }
+                if(isValidSudoku(grid)){
+                    output_file << entry.path().filename() << "\n";
+                } else{
+                    fmt::print(stderr, "Failed to open");
+                }
+            }
+        }
+    }
+    output_file.close();
+}
