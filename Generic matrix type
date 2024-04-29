@@ -1,0 +1,226 @@
+#include <iostream>
+#include <fmt/core.h>
+#include <vector>
+#include <fmt/ranges.h>
+#include <stdexcept>
+#include <cmath>
+
+
+template <typename T>
+struct Matrix {
+    std::vector<std::vector<T>> data;
+    int rows;
+    int cols{};
+
+    Matrix(int rows = 0, int cols = 0) : rows(rows), cols(cols) {
+        data.resize(rows, std::vector<T>(cols));
+    }
+
+    Matrix(const std::vector<std::vector<T>>& matrix){
+        rows = matrix.size();
+        cols = (rows > 0) ? matrix[0].size() : 0;
+
+        data.resize(rows, std::vector<T>(cols));
+
+        for(int i = 0; i < rows; ++i){
+            for(int j = 0; j < matrix[i].size(); ++j){
+                data[i][j] = matrix[i][j];
+            }
+        }
+    }
+
+
+    int numRows() const {
+        return rows;
+    }
+
+    int numCols() const {
+        return cols;
+    }
+
+    T& operator()(int i, int j) {
+        if (i < 0 || i >= rows || j < 0 || j >= cols) {
+            throw std::out_of_range("Matrix size out of range!");
+        }
+        return data[i][j];
+    }
+
+    Matrix<T> operator+(const Matrix<T>& other) const{
+        //Checking dimensions for adding
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument("Invalid size");
+        }
+
+        //addition result
+        Matrix<T> result(rows, cols);
+
+        //elem addition
+        for(int i = 0; i < rows; ++i){
+            for(int j = 0; j < cols; ++j){
+                result.data[i][j] = data[i][j] + other.data[i][j];
+            }
+        }
+
+        return result;
+    }
+
+    Matrix<T> operator-(const Matrix<T>& other) const{
+        //Checking dimensions for adding
+        if(rows != other.rows || cols != other.cols){
+            throw std::invalid_argument("Invalid size");
+        }
+
+        //addition result
+        Matrix<T> result(rows, cols);
+
+        //elem addition
+        for(int i = 0; i < rows; ++i){
+            for(int j = 0; j < cols; ++j){
+                result.data[i][j] = data[i][j] - other.data[i][j];
+            }
+        }
+
+        return result;
+    }
+
+    Matrix<T> operator*(const Matrix<T>& other) const{
+        //Checking dimensions for multip
+        if(cols != other.cols){
+            throw std::invalid_argument("Invalid size for multiplication");
+        }
+
+        int resultRows = rows;
+        int resultCols = other.cols;
+        Matrix<T> result(resultRows, resultCols);
+
+        for(int i = 0; i < resultRows; ++i){
+            for(int j = 0; j < resultCols; ++j){
+
+                T sum = 0;
+                for (int k = 0; k< cols; ++k){
+                    sum += data[i][k] * other.data[k][j];
+                }
+                result.data[i][j] = sum;
+            }
+        }
+
+        return result;
+    }
+
+    Matrix<T> transpose() const{
+        Matrix<T> result(cols, rows);
+
+        for(int i = 0; i < cols; ++i){
+            for(int j = 0; j < rows; ++j){
+                result.data[i][j] = data[j][i];
+            }
+        }
+        return result;
+    }
+
+    Matrix<T> gaussian() {
+        Matrix<T> result(*this); //Coppy of curr matrix
+
+        int lead = 0;
+        int rowCount = rows;
+        int colCount = cols;
+
+        for(int i = 0; i < rowCount; ++i){
+            if(lead >= colCount){
+                break;
+            }
+
+            int row_curr = i;
+
+            while(row_curr < rowCount && std::fabs(data[row_curr][lead]) < std::numeric_limits<T>::epsilon()){
+                ++row_curr;
+            }
+
+            if(row_curr == rowCount){
+                ++lead;
+                continue;
+            }
+
+            std::swap(data[row_curr], data[i]);
+
+            T val = data[i][lead];
+            for(int j = 0; j < colCount; ++j){
+                data[i][j] /= val;
+            }
+
+            for(int k = 0; k < rowCount; ++k){
+                if(k != i && std::fabs(data[k][lead]) > std::numeric_limits<T>::epsilon()){
+                    T factor = data[k][lead];
+                    for(int j = 0; j < colCount; ++j){
+                        data[k][j] -= data[i][j] * factor;
+                    }
+                }
+            }
+            ++lead;
+        }
+
+        return result;
+    }
+
+
+
+    void display() const {
+        for (int i = 0; i < rows; ++i) {
+            fmt::print("{}\n", data[i]);
+        }
+        fmt::print("\n");
+    }
+
+};
+
+auto main() -> int {
+    // Create two matrices
+    Matrix<double> matA({
+        {2.0, 1.0, -1.0},
+        {-3.0, -1.0, 2.0},
+        {-2.0, 1.0, 2.0}
+    });
+
+    Matrix<double> matB({
+        {1.0, -2.0, 3.0},
+        {0.0, -1.0, 4.0},
+        {2.0, 3.0, -1.0}
+    });
+
+    // Display original matrices
+    fmt::print("Matrix A:\n");
+    matA.display();
+    fmt::print("Matrix B:\n");
+    matB.display();
+
+    // Display transposed matrices
+    fmt::print("Transpose of Matrix A:\n");
+    Matrix<double> transposedA = matA.transpose();
+    transposedA.display();
+    fmt::print("Transpose of Matrix B:\n");
+    Matrix<double> transposedB = matB.transpose();
+    transposedB.display();
+
+    // Apply Gaussian Elimination Algorithm (GEA) on matrices
+    Matrix<double> matA_gauss = matA.gaussian();
+    Matrix<double> matB_gauss = matB.gaussian();
+
+    // Display matrices after GEA
+    fmt::print("Matrix A after Gaussian Elimination Algorithm:\n");
+    matA_gauss.display();
+    fmt::print("Matrix B after Gaussian Elimination Algorithm:\n");
+    matB_gauss.display();
+
+    // Perform matrix addition, subtraction, and multiplication
+    Matrix<double> additionResult = matA + matB;
+    Matrix<double> subtractionResult = matA - matB;
+    Matrix<double> multiplicationResult = matA * matB;
+
+    // Display results of addition, subtraction, and multiplication
+    fmt::print("Matrix A + B:\n");
+    additionResult.display();
+    fmt::print("Matrix A - B:\n");
+    subtractionResult.display();
+    fmt::print("Matrix A * B:\n");
+    multiplicationResult.display();
+}
